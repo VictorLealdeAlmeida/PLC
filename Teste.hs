@@ -1,3 +1,5 @@
+import Data.Char
+
 soma 1 = 1
 soma n = soma(n-1) + n
 
@@ -174,11 +176,28 @@ eh_vertical (x,y) (w,z) | x == w = True
 
 
 
+------ Aula 5
+
+membroLista :: [Int] -> Int -> Bool 
+membroLista [] _ = False
+membroLista (x:xs) n   | (n==x) = True
+                       | otherwise = pertence xs n
+
+
+digitoLista :: [Char] -> [Char] 
+digitoLista [] = []
+digitoLista (x:xs) 
+    | isDigit x = x : digitoLista xs
+    | otherwise = digitoLista xs
+
+
+somarParesLista :: [(Int,Int)] -> [Int]
+somarParesLista [] = []
+somarParesLista ((x1,x2):xs) = x1+x2 : somarParesLista xs
 
 
 
-
-
+--membro :: [Int] -> Int -> Bool
 
 
 
