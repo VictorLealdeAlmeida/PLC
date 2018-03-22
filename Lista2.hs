@@ -116,6 +116,7 @@ qtdEmprestimos2 :: BancoDados -> Pessoa -> Int
 qtdEmprestimos2 banco pessoa = length [ 1 | (p,l) <- banco, p == pessoa]
 
 --emprestar :: BancoDados -> Pessoa -> Livro -> BancoDados
+
 emprestar2 :: BancoDados -> Pessoa -> Livro -> BancoDados
 emprestar2 banco pessoa livro = (pessoa, livro) : banco
 
