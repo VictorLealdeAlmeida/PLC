@@ -1,0 +1,89 @@
+------ Aula Tipos Algebricos
+
+data Expr = Lit Int | Add Expr Expr | Sub Expr Expr
+
+expr1 = (Lit 4)
+expr2 = (Add (Lit 2) (Sub (Lit 4) (Lit 2)))
+
+eval :: Expr -> Int
+eval (Lit n) = n
+eval (Add e1 e2) = (eval e1) + (eval e2) 
+eval (Sub e1 e2) = (eval e1) - (eval e2)
+
+showExpr :: Expr -> String
+showExpr (Lit n) = show n
+showExpr (Add e1 e2) = "(" ++ showExpr e1 ++ " + " ++ showExpr e2 ++ ")"
+showExpr (Sub e1 e2) = "(" ++ showExpr e1 ++ " - " ++ showExpr e2 ++ ")"
+
+data List t = NilL | Cons t (List t) deriving Show
+
+list1 = Cons 7 (Cons 3 (Cons 2 (NilL)))
+
+toList :: List t -> [t]
+toList (NilL) = []
+toList (Cons t xs) = t : toList xs
+
+fromList :: [t] -> List t
+fromList [] = NilL
+fromList (x:xs) = (Cons x(fromList xs)) 
+
+
+data Tree t = Nil | Node (Tree t) t (Tree t) deriving Show
+
+tree1 = Node (Nil) 4 (Nil)
+tree2 = Node (Node (Nil) 7 (Nil)) 4 (Node (Nil) 3 (Nil))
+tree3 = Node (Node (Node (Nil) 4 (Nil)) 7 (Node (Nil) 5 (Nil))) 1 (Node (Nil) 3 (Nil))
+
+depth :: Tree t -> Int
+depth (Nil) = 0
+depth (Node t1 value t2) = 1 + max (depth t1) (depth t2)
+
+callapse :: Tree t -> [t]
+callapse (Nil) = []
+callapse (Node t1 value t2) = [value] ++ callapse t1 ++ callapse t2
+
+mapTree :: (t -> u) -> Tree t -> Tree u
+mapTree f Nil = Nil
+mapTree f (Node t1 value t2) = (Node (mapTree f t1) (f value) (mapTree f t2))
+
+dobra n = 2 * n
+
+------ Exercícios - listas e tipos algébricos
+
+--Defina uma função que, dados dois números x e y, retorne como resultado o m.d.c. de x e y.
+
+--Defina uma função que, dado um número inteiro positivo x, verifique se x é primo ou não. Lembre-se de utilizar o crivo de Eratóstenes por razões de otimização.
+
+ehPrimo :: Int -> Bool
+ehPrimo n = pertenceF (filtroPrimo[2 .. n]) n
+
+
+filtroPrimo :: [Int] -> [Int]
+filtroPrimo [] = []
+filtroPrimo (x:xs) = [x] ++ (filtroPrimo (filter (\e -> not(mod e x == 0)) (xs)))
+
+pertenceF :: [Int] -> Int -> Bool
+pertenceF [] n = False
+pertenceF (x:xs) n | x == n = True
+                   | otherwise = pertenceF xs n
+
+-- Dados dois pontos num espaço tridimensional, defina uma função distancia e um tipo Ponto de tal forma que a função calcule a distância entre dois pontos passados como parâmetros. A função tem tipo Ponto -> Ponto -> Double.
+
+type PontoP = (Double, Double,Double)
+
+distanciaP :: PontoP -> PontoP -> Double
+distanciaP (x1,y1,z1) (x2,y2,z2) = sqrt(((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1)) + ((z2 - z1)*(z2 - z1)))
+
+-- Usando compreensão de lista, defina uma expressão que calcule a soma 12+22+...+1002 dos quadrados dos cem primeiros inteiros positivos
+
+somaQ = sum [ x * x | x <- [0 .. 99]]
+
+--Suponha que uma grade de coordenadas de tamanho m x n is dada por uma lista de todos os pares (x,y) tal que 0⩽x⩽m e 0⩽y⩽n. Usando compreensão de lista, defina a função grid:: Int -> Int -> [(Int, Int)] que retorna uma grade de um dado tamanho
+
+
+-- Exercícios - listas e funções de alta ordem
+
+-- 1 Usando compreensão de lista, defina uma função que, dado um inteiro positivo n, retorna uma lista com os fatoriais de 1 até n
+
+fatC :: Int -> [Int]
+fatC n = [x*x | x <- [1 .. n]]
