@@ -197,7 +197,6 @@ somarParesLista ((x1,x2):xs) = x1+x2 : somarParesLista xs
 
 
 
-
 ------ Aula Tipos Algebricos
 
 data Expr = Lit Int | Add Expr Expr | Sub Expr Expr
@@ -247,44 +246,6 @@ mapTree f Nil = Nil
 mapTree f (Node t1 value t2) = (Node (mapTree f t1) (f value) (mapTree f t2))
 
 dobra n = 2 * n
-
------- Exercícios - listas e tipos algébricos
-
---Defina uma função que, dados dois números x e y, retorne como resultado o m.d.c. de x e y.
-
---Defina uma função que, dado um número inteiro positivo x, verifique se x é primo ou não. Lembre-se de utilizar o crivo de Eratóstenes por razões de otimização.
-
-ehPrimo :: Int -> Bool
-ehPrimo n = pertenceF (filtroPrimo[2 .. n]) n
-
-
-filtroPrimo :: [Int] -> [Int]
-filtroPrimo [] = []
-filtroPrimo (x:xs) = [x] ++ (filtroPrimo (filter (\e -> not(mod e x == 0)) (xs)))
-
-pertenceF :: [Int] -> Int -> Bool
-pertenceF [] n = False
-pertenceF (x:xs) n | x == n = True
-                   | otherwise = pertenceF xs n
-
--- Dados dois pontos num espaço tridimensional, defina uma função distancia e um tipo Ponto de tal forma que a função calcule a distância entre dois pontos passados como parâmetros. A função tem tipo Ponto -> Ponto -> Double.
-
-type PontoP = (Double, Double,Double)
-
-distanciaP :: PontoP -> PontoP -> Double
-distanciaP (x1,y1,z1) (x2,y2,z2) = sqrt(((x2 - x1)*(x2 - x1)) + ((y2 - y1)*(y2 - y1)) + ((z2 - z1)*(z2 - z1)))
-
--- Usando compreensão de lista, defina uma expressão que calcule a soma 12+22+...+1002 dos quadrados dos cem primeiros inteiros positivos
-
-somaQ = sum [ x * x | x <- [0 .. 99]]
-
-
--- Exercícios - listas e funções de alta ordem
-
--- 1 Usando compreensão de lista, defina uma função que, dado um inteiro positivo n, retorna uma lista com os fatoriais de 1 até n
-
-fatC :: Int -> [Int]
-fatC n = [x*x | x <- [1 .. n]]
 
 
 
