@@ -120,8 +120,77 @@ imprimeMes ds = zip [ x | x <- [1 .. 30]] [toEnum(((x - 1) + fromEnum ds) `mod` 
 
 sort :: (a -> a -> Bool) -> [a] -> [a]
 sort f [] = []
-sort f (x:y:xs) | f x y == True = x : sort f y:xs
-                | otherwise = sort f (xs++[x]++[y])
+sort f [x] = [x]
+sort f l = mergeAux f (sort f (take (length l `div` 2) l))  (sort f (drop (length l `div` 2) l))
+
+
+mergeAux :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+mergeAux f [] [] = []
+mergeAux f l1 [] = l1
+mergeAux f [] l2 = l2
+mergeAux f (x:xs) (y:ys) | f x y == True = x : mergeAux f xs (y:ys)
+                         | otherwise = y : mergeAux f (x:xs) ys
+
+
+quickSort _ [] = []
+quickSort f (h:t) = (quickSort f [x | x<-t, f x h]) ++ [h] ++ (quickSort f [x | x<-t , not $ f x h ])
+
+sort1 :: (a->a->Bool)->[a]->[a] 
+sort1 f [] = []
+sort1 f (h:t) = (sort1 f [ x | x <- t, f x h]) ++ [h] ++ (sort1 f [ x | x <- t, not $ f x h])
+
+-- Crie uma função agrupar :: Eq a => [a] -> [[a]] , que recebe uma lista e devolve uma lista de lista dos elementos iguais
+
+agrupar :: Eq a => [a] -> [[a]]
+agrupar [] = []
+agrupar (x:xs) = addAgrupar x (agrupar xs)
+
+addAgrupar :: Eq a => a -> [[a]] -> [[a]]
+addAgrupar n [] = [[n]] 
+addAgrupar n ((x:xs):t) | x == n = ((x:n:xs):t)
+                        | otherwise = (x:xs) : addAgrupar n t
+
+-- Considere os seguintes tipos sinônimos: 
+
+type Lado = Float
+type Triangulo = (Lado, Lado, Lado)
+
+somaAreas :: [Triangulo] -> Float
+somaAreas l = foldr1 (+) (map areaTr l)
+
+areaTr :: Triangulo -> Float
+areaTr (l1,l2,l3) = l1 * l2 / 2 -- Essa area é só pr alguns casos de triangulos
+
+
+-- Implemente uma função functions :: [(a -> a -> a)] -> [a] -> [(a -> a)] que recebe uma lista de funções binárias e uma lista de valores. O funcionamento de functions é tal que aplica cada função a um respectivo elemento da lista de valores e retorna uma lista de funções parcialmente aplicadas. Dê alguns exemplos de entrada e respectiva saída para functions.
+ 
+
+functions :: [(a -> a -> a)] -> [a] -> [(a -> a)]
+functions (f:fs) (x:xs) = (f x) : functions fs xs
+
+functions2 :: (a -> a -> a) -> a -> (a -> a)
+functions2 f x = f x
+
+-- Considere uma lista de nomes completos de pessoas, escreva uma função que retorne a lista de nomes abreviados da seguinte forma:
+-- abrev ["Alberto Rodrigues Pontes", "Amanda Azevedo Mendes"]
+
+abrev :: [Char] -> [Char]
+abrev (x:xs) = [x]
+ ++ "." ++ last (abrevAux (x:xs) "")
+
+
+{--abrevAux :: [Char] -> [Char]
+abrevAux [] = []
+abrevAux (x:xs) | xs == [] || x == ' ' = xs
+                | otherwise = abrevAux xs
+--}
+
+
+abrevAux :: [Char] -> [Char] -> [[Char]]
+abrevAux [] s = [s]
+abrevAux (x:xs) s | x == ' ' = [s] ++ (abrevAux xs "")
+                  | otherwise = (abrevAux xs (s ++ [x]))
+
 
 
 --ptthon -m http.server
@@ -151,12 +220,12 @@ testaLista3 f l = foldr (&&) True (map f l)
 
 -- O sistema de arquivos de um sistema operacional é constituído de arquivos simples e diretórios (pastas). Um arquivo simples possui nome e conteúdo; um diretório possui um nome e uma lista de arquivos dentro dele.
 
--- 1
+-- 1 
 
 type Nome = String
 type Conteudo = String
 
-data Arquivo = Simples Nome Conteudo | Diretorio Nome [Arquivo] deriving (Show,Eq)
+data Arquivo = Simples Nome Conteudo | Diretorio Nome [Arquivo] 
 
 arq1 = Simples "Video" "Coisas legais"
 arq2 = Diretorio "Pasta" [Simples "Arq1" "Descricao", Simples "Arq2" "Descricao"]
@@ -165,7 +234,51 @@ arq2 = Diretorio "Pasta" [Simples "Arq1" "Descricao", Simples "Arq2" "Descricao"
 
 
 
+instance Eq Arquivo where
+   (==) (Simples n c) (Simples n1 c1) = n1==n && c1==c 
+   (==) (Diretorio n c) (Diretorio n1 c1) = n1==n && c1==c
+   (==) (Diretorio _ _) (Simples _ _) = False
+   (==) (Simples _ _) (Diretorio _ _) = False
 
+-- 3
+
+instance Show Arquivo where
+   show = arqNome
+
+-- 4
+
+arqNome :: Arquivo -> Nome
+arqNome (Simples n _) = n
+arqNome (Diretorio n _) = n
+
+
+-- 5
+
+
+
+{--
+protocol Eq {
+	func (==)(a:A, b:A) -> Bool
+}
+
+class ALgumaCoisa:Eq{
+	func (==)sadsadas
+
+}
+
+let x = ALgumaCoisa()
+x.(==)
+
+
+class Eq a where 
+	(==)
+
+
+instance Eq Arquivo where
+ 	func =  
+
+arq1 == arq2
+--}
 
 ------ Exercícios - Lista 19/04
 -- https://piazza-resources.s3.amazonaws.com/jdaiwpsle464ey/jg6etq0fp0oio/listaHaskell_lab.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAIZ3B4FRTV5SFJRTA%2F20180419%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20180419T110856Z&X-Amz-Expires=10800&X-Amz-SignedHeaders=host&X-Amz-Security-Token=FQoDYXdzENP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDDbbRPqrKW5ckyESPyK3AzNB0j%2F0CfsHfefNQ6D1175flTPVhxuPXca9Qtd3AkxXAipo2TMfwgQzAKRtkQiz%2FCLqMPI1LiSaEgGnVrzqRWaFMjIQgUgZQmMq1ZZsnWUtLFCljfXJdlAiD0UuezCvMmA203vr5pkX9MfsNEae%2BM4c0OdwdhocDhKwMZmKWeuDDsVKfCmuxdKzBHaPhlHyUp36Pa0YLP1Ci41so3mKcIPIBevPC6E8gC7aL0UBWKf527BF8fYI0y9nYX5Vqg3oDvQiy1r1KK2pIy06nXAq9JFNr29Ggv6lQ5%2B%2FFHmqsqWSrIBB%2FnUUgkdalBI0bmRAOx%2Bvr%2BHe%2FuhkfXZ9DZoDHFTDzaEd9k70a3H1usiLyjjoAj3CrQPEWzEg4Y4U7Wq1WPAKgMJTgIRGYojLz900zzoBtbRPwCxFWg3585jZye1xyfK%2FdGEim3TsiWtue1O53u1YjQQpZxJMs3PtgQTGB03ahjwWXjkoSYi3bvJV2gYErXtbGrlHvGqK7O0dFVPgBjJjikBEzH0xOJ2FRq9qIp0fPKGfqYLC3vn7t5wXAZBX1Ne4mcgRErN%2FSMS0CWAIcgMdXAETXGkoy9Ph1gU%3D&X-Amz-Signature=3d6b35bb5cc4bfa18232628da8c491d2b0a22f4fb1a17f1b15c63e15c5ca0e9c
